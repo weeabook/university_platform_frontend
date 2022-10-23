@@ -1,5 +1,5 @@
 import 'profile_entities.dart';
-import 'progile_repository.dart';
+import 'profile_repository.dart';
 
 class FetchProfileUseCase {
   const FetchProfileUseCase(this._repository);
