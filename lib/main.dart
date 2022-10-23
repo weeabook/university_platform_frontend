@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'presentation/pages/main_page.dart';
+
 void main() {
   runApp(const PlatfoemApp());
 }
@@ -9,6 +11,8 @@ class PlatfoemApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp();
+    return MaterialApp(
+      home: MainPage(),
+    );
   }
 }
