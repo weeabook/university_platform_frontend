@@ -2,7 +2,7 @@ import 'package:localstorage/localstorage.dart';
 
 abstract class LocalDatasource {
   Future<void> contributeAuthToken(String token);
-  Future<String> getAuthToken();
+  Future<String?> getAuthToken();
   Future<void> deleteAuthToken();
 }
 
@@ -17,7 +17,7 @@ class LocalDatasourceImpl implements LocalDatasource {
   }
 
   @override
-  Future<String> getAuthToken() async {
+  Future<String?> getAuthToken() async {
     return await _db.getItem('token');
   }
 

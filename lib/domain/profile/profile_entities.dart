@@ -6,7 +6,8 @@ class Profile {
     this.avatarUrl,
     this.recordbook,
     required this.role,
-    required this.group,
+    required this.groupId,
+    required this.groupName,
     required this.email,
   });
 
@@ -16,6 +17,7 @@ class Profile {
   final String? avatarUrl;
   final String? recordbook;
   final String role;
-  final String group;
+  final int groupId;
+  final String groupName;
   final String email;
 }

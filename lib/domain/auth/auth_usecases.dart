@@ -6,7 +6,9 @@ class IsAuthorizedUseCase {
 
   final AuthRepository _repository;
 
-  bool exec() => _repository.isAuthorized();
+  Future<bool> exec() async {
+    return await _repository.isAuthorized();
+  }
 }
 
 class SignInUseCase {

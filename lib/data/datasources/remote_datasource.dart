@@ -11,9 +11,9 @@ import '../models/profiile_model.dart';
 
 abstract class RemoteDatasource {
   Future<String> signIn(String email, String password);
-  Future<String> signUp(AuthUserDto dto);
+  Future<void> signUp(AuthUserDto dto);
 
-  Future<void> createAppeal(AppealModel appeal);
+  Future<void> createAppeal(String token, AppealModel appeal);
 
   Future<List<CategoryModel>> fetchCategories();
 
@@ -21,7 +21,9 @@ abstract class RemoteDatasource {
   Future<NewsModel> fetchNewsByID(int newsId);
   Future<List<NewsModel>> fetchNewsByCategoryID(int categoryId);
 
-  Future<ProfileModel> fetchProfile();
+  Future<ProfileModel> fetchProfile(String token);
+
+  Future<void> downloadTimetable(String token, int groupId);
 }
 
 class RemoteDatasourceImpl implements RemoteDatasource {
@@ -41,40 +43,80 @@ class RemoteDatasourceImpl implements RemoteDatasource {
   }
 
   @override
-  Future<String> signUp(AuthUserDto dto) async {
+  Future<void> signUp(AuthUserDto dto) async {
     await _client.post(
       _uriResolver.uri('${Urls.pahtToServer}/sign-up'),
       body: dto.toJson(),
     );
-
-    return await signIn(dto.email, dto.password);
   }
 
   @override
-  Future<void> createAppeal(AppealModel appeal) async {}
+  Future<void> createAppeal(String token, AppealModel appeal) async {
+    final res = await _client.post(
+      _uriResolver.uri('${Urls.pahtToServer}/rector-appeal'),
+      headers: {'Authorization': token},
+      body: appeal.toJson(),
+    );
+
+    return;
+  }
 
   @override
   Future<List<CategoryModel>> fetchCategories() async {
-    throw Error();
+    final List<CategoryModel> categories = [];
+    categories.addAll([
+      const CategoryModel(id: 1, name: 'Университет'),
+      const CategoryModel(id: 2, name: 'Профсоюз'),
+      const CategoryModel(id: 3, name: 'Студсовет'),
+      const CategoryModel(id: 4, name: 'Общежития'),
+    ]);
+
+    return categories;
   }
 
   @override
   Future<List<NewsModel>> fetchNews() async {
-    throw Error();
+    final res = await _client.get(
+      _uriResolver.uri('${Urls.pahtToServer}/news/'),
+    );
+
+    final json = jsonDecode(res.body) as List<Map<String, dynamic>>;
+
+    return json.map((e) => NewsModel.fromMap(e)).toList();
   }
 
   @override
   Future<NewsModel> fetchNewsByID(int newsId) async {
-    throw Error();
+    final res = await _client.get(
+      _uriResolver.uri('${Urls.pahtToServer}/news', [
+        QueryParam(key: 'id', value: '$newsId'),
+      ]),
+    );
+
+    return NewsModel.fromMap(jsonDecode(res.body));
   }
 
   @override
   Future<List<NewsModel>> fetchNewsByCategoryID(int categoryId) async {
-    throw Error();
+    final res = await _client.get(
+      _uriResolver.uri('${Urls.pahtToServer}/news', [
+        QueryParam(key: 'category', value: '$categoryId'),
+      ]),
+    );
+    final json = jsonDecode(res.body) as List<Map<String, dynamic>>;
+
+    return json.map((e) => NewsModel.fromMap(e)).toList();
   }
 
   @override
-  Future<ProfileModel> fetchProfile() async {
-    throw Error();
+  Future<ProfileModel> fetchProfile(String token) async {
+    final res = await _client.get(
+      _uriResolver.uri('${Urls.pahtToServer}/profile'),
+    );
+
+    return ProfileModel.fromJson(res.body);
   }
+
+  @override
+  Future<void> downloadTimetable(String token, int groupId) async {}
 }
